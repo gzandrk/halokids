@@ -261,4 +261,14 @@ public class GameManager : MonoBehaviour
         Win.SetActive(true);
         winnertxt.text = playerList[activePlayer].namaPlayer + " Menang";
     }
+
+    public void BackMainMenu()
+    {
+        SceneLoad.Load(SceneLoad.Scene.MainMenu1);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
