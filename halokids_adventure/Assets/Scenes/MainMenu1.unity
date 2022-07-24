@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Aboutpanel: {fileID: 1883338858}
-  CreditPanel: {fileID: 0}
+  CreditPanel: {fileID: 2098739644}
 --- !u!1 &654927750
 GameObject:
   m_ObjectHideFlags: 0

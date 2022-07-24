@@ -8,6 +8,12 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     public GameObject Aboutpanel;
     public GameObject CreditPanel;
+
+    private void Awake()
+    {
+        Aboutpanel.SetActive(false);
+        CreditPanel.SetActive(false);
+    }
     public void StartGame()
     {
         SceneLoad.Load(SceneLoad.Scene.PickPlayer1);
