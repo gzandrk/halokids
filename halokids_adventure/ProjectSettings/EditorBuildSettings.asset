@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game1.unity
     guid: 02a02daddf87e734eb93ad89ed04fd7e
+  - enabled: 1
+    path: Assets/Scenes/Game2.unity
+    guid: a982034fac84b0544b0dbb4670f15eb3
   m_configObjects:
     EasyAR.Settings: {fileID: 11400000, guid: 3c24a489769513042a93e409bf5daea4, type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 744b813df90924c169af73489b8325de,

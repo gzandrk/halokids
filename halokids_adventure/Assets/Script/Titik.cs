@@ -5,6 +5,8 @@ using UnityEngine;
 public class Titik : MonoBehaviour
 {
     public int titik_ID;
+    public bool enemies;
+    public bool ultimateEnemies;
     public bool bonusMaju;
     List<PlayerMovement> playerList = new List<PlayerMovement>();
     // Start is called before the first frame update

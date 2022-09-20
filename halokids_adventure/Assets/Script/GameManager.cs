@@ -8,13 +8,16 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public Dadu dadu;
     public QuizManager quiz;
+    public PlayerMovement playerMovement;
 
     int activePlayer, angkaDadu;
 
-    public GameObject rollDiceButton1, rollDiceButton2, rollDiceButton3, rollDiceButton4;
     public GameObject Win;
 
     public Text winnertxt;
+
+    public AudioSource source;
+    public AudioClip gameover;
 
     [System.Serializable]
     public class Player
@@ -22,12 +25,11 @@ public class GameManager : MonoBehaviour
         public PlayerMovement playerMovement;
 
         public string namaPlayer;
+
+        public GameObject rollButton;
         public enum TipePlayer
             {
-                Player1,
-                Player2,
-                Player3,
-                Player4,
+                Human,
                 CPU
             }
         public TipePlayer tipePlayer;
@@ -49,21 +51,9 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < playerList.Count; i++)
         {
-            if (SaveSetting.tipeplayer[i] == "Player1")
+            if (SaveSetting.tipeplayer[i] == "Human")
             {
-                playerList[i].tipePlayer = Player.TipePlayer.Player1;
-            }
-            if (SaveSetting.tipeplayer[i] == "Player2")
-            {
-                playerList[i].tipePlayer = Player.TipePlayer.Player2;
-            }
-            if (SaveSetting.tipeplayer[i] == "Player3")
-            {
-                playerList[i].tipePlayer = Player.TipePlayer.Player3;
-            }
-            if (SaveSetting.tipeplayer[i] == "Player4")
-            {
-                playerList[i].tipePlayer = Player.TipePlayer.Player4;
+                playerList[i].tipePlayer = Player.TipePlayer.Human;
             }
             if (SaveSetting.tipeplayer[i] == "CPU")
             {
@@ -73,10 +63,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        Button1Active(false);
-        Button2Active(false);
-        Button3Active(false);
-        Button4Active(false);
+        DeactiveAllButton();
         Win.SetActive(false);
         quiz.GameOverPanel.SetActive(false);
         quiz.Quizpanel.SetActive(false);
@@ -107,7 +94,7 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
-        if (playerList[activePlayer].tipePlayer == Player.TipePlayer.Player1) 
+        if (playerList[activePlayer].tipePlayer == Player.TipePlayer.Human) 
         {
             switch (state)
             {
@@ -115,80 +102,11 @@ public class GameManager : MonoBehaviour
                     //ga ngapa-ngapain
                     break;
                 case States.ROLL_DICE:
-                    Button1Active(true);
+                    ActiveSpesificButton(true);
                     state = States.WAITING;
                     break;
                 case States.JAWAB_QUIZ:
-                    Button1Active(false);
-                    quiz.GeneratePertanyaan();
-                    state = States.WAITING;
-                    break;
-                case States.SWITCH_Player:
-                    activePlayer++;
-                    activePlayer %= playerList.Count;
-                    state = States.ROLL_DICE;
-                    break;
-            }
-        }
-        if (playerList[activePlayer].tipePlayer == Player.TipePlayer.Player2)
-        {
-            switch (state)
-            {
-                case States.WAITING:
-                    //ga ngapa-ngapain
-                    break;
-                case States.ROLL_DICE:
-                    Button2Active(true);
-                    state = States.WAITING;
-                    break;
-                case States.JAWAB_QUIZ:
-                    Button2Active(false);
-                    quiz.GeneratePertanyaan();
-                    state = States.WAITING;
-                    break;
-                case States.SWITCH_Player:
-                    activePlayer++;
-                    activePlayer %= playerList.Count;
-                    state = States.ROLL_DICE;
-                    break;
-            }
-        }
-        if (playerList[activePlayer].tipePlayer == Player.TipePlayer.Player3)
-        {
-            switch (state)
-            {
-                case States.WAITING:
-                    //ga ngapa-ngapain
-                    break;
-                case States.ROLL_DICE:
-                    Button3Active(true);
-                    state = States.WAITING;
-                    break;
-                case States.JAWAB_QUIZ:
-                    Button3Active(false);
-                    quiz.GeneratePertanyaan();
-                    state = States.WAITING;
-                    break;
-                case States.SWITCH_Player:
-                    activePlayer++;
-                    activePlayer %= playerList.Count;
-                    state = States.ROLL_DICE;
-                    break;
-            }
-        }
-        if (playerList[activePlayer].tipePlayer == Player.TipePlayer.Player4)
-        {
-            switch (state)
-            {
-                case States.WAITING:
-                    //ga ngapa-ngapain
-                    break;
-                case States.ROLL_DICE:
-                    Button4Active(true);
-                    state = States.WAITING;
-                    break;
-                case States.JAWAB_QUIZ:
-                    Button4Active(false);
+                    ActiveSpesificButton(false);
                     quiz.GeneratePertanyaan();
                     state = States.WAITING;
                     break;
@@ -214,51 +132,28 @@ public class GameManager : MonoBehaviour
         playerList[activePlayer].playerMovement.Giliran(angkaDadu);
     }
 
-    void Button1Active(bool on)
+    void DeactiveAllButton()
     {
-        rollDiceButton1.SetActive(on);
-    }
-    void Button2Active(bool on)
-    {
-        rollDiceButton2.SetActive(on);
-    }
-    void Button3Active(bool on)
-    {
-        rollDiceButton3.SetActive(on);
-    }
-    void Button4Active(bool on)
-    {
-        rollDiceButton4.SetActive(on);
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            playerList[i].rollButton.SetActive(false);
+        }
     }
 
-    public void Manual1RollDice()
+    public void ActiveSpesificButton(bool on)
     {
-        Button1Active(false);
+        playerList[activePlayer].rollButton.SetActive(on);
+    }
+    public void ManualRollDice()
+    {
+        ActiveSpesificButton(false);
         StartCoroutine(TungguRoll());
     }
-    public void Manual2RollDice()
-    {
-        Button2Active(false);
-        StartCoroutine(TungguRoll());
-    }
-    public void Manual3RollDice()
-    {
-        Button3Active(false);
-        StartCoroutine(TungguRoll());
-    }
-    public void Manual4RollDice()
-    {
-        Button4Active(false);
-        StartCoroutine(TungguRoll());
-    }
-
     public void ReportPemenang()
     {
-        Button1Active(false);
-        Button2Active(false);
-        Button3Active(false);
-        Button4Active(false);
+        DeactiveAllButton();
         Win.SetActive(true);
+        source.PlayOneShot(gameover);
         winnertxt.text = playerList[activePlayer].namaPlayer + " Menang";
     }
 

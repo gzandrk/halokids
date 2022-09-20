@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,20 +11,31 @@ public class PlayerMovement : MonoBehaviour
     public List<Titik> titikList = new List<Titik>();
 
     int posisiRute;
-
-    int player_id; //apabila ada 2 player, simpen aja buat jaga2
-    float speed = 2f;
-
     int sisaLangkah;
     int langkah;
+
     public int bonus_Maju;
 
+    float speed = 2f;
+
     bool bolehMaju;
+
+    public Text kurang;
+    public Text mundur;
+
+    public GameObject kurangpanel;
+    public GameObject bomDuarrr;
+
+    public AudioSource source;
+    public AudioClip jebakan;
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach(Transform c in rute.titikList) 
+        kurangpanel.SetActive(false);
+        bomDuarrr.SetActive(false);
+
+        foreach (Transform c in rute.titikList) 
         {
             Titik t = c.GetComponentInChildren<Titik>();
             if(t!=null)
@@ -64,7 +76,6 @@ public class PlayerMovement : MonoBehaviour
         {
             print("soal muncul");
             GameManager.instance.state = GameManager.States.JAWAB_QUIZ;
-            //yield return new WaitUntil(()=>quiz.hasil);
             yield return new WaitForSeconds(10);
                 if (quiz.hasil == true)
                 {
@@ -82,6 +93,50 @@ public class PlayerMovement : MonoBehaviour
                 }
             
             //Debug.Log("kunci = "+quiz.kunci);
+        }
+
+        //check bom
+        if (titikList[posisiRute].enemies == true)
+        {
+            int enemiesRandom = Random.Range(1, 7);
+            bomDuarrr.SetActive(true);
+            source.PlayOneShot(jebakan);
+            mundur.text = "Mundur " + enemiesRandom+" langkah";
+            yield return new WaitForSeconds(5);
+            bomDuarrr.SetActive(false);
+            for (int i = 0; enemiesRandom > i; i++)
+                {
+                    posisiRute--;
+                    Vector3 nextPos = titikList[posisiRute].transform.position;
+                    while (PindahTitikSelanjutnya(nextPos))
+                    {
+                        yield return null;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                    langkah--;
+                }
+        }
+
+        //check bom ultimate
+        if (titikList[posisiRute].ultimateEnemies == true)
+        {
+            int enemiesRandom = 31;
+            bomDuarrr.SetActive(true);
+            source.PlayOneShot(jebakan);
+            mundur.text = "Mundur " + enemiesRandom + " langkah";
+            yield return new WaitForSeconds(5);
+            bomDuarrr.SetActive(false);
+            for (int i = 0; enemiesRandom > i; i++)
+            {
+                posisiRute--;
+                Vector3 nextPos = titikList[posisiRute].transform.position;
+                while (PindahTitikSelanjutnya(nextPos))
+                {
+                    yield return null;
+                }
+                yield return new WaitForSeconds(0.1f);
+                langkah--;
+            }
         }
 
         //Tambah player
@@ -114,9 +169,20 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            StartCoroutine(Kurang());
             print("Angka terlalu besar: "+angkaDadu);
+            GameManager.instance.StartCoroutine(Kurang());
             //UPDATE GAMEMANAGER
             GameManager.instance.state = GameManager.States.SWITCH_Player;
         }
     }
+
+    IEnumerator Kurang()
+    {
+        kurangpanel.SetActive(true);
+        kurang.text = "angka dadu terlalu besar " + sisaLangkah;
+        yield return new WaitForSeconds(5);
+        kurangpanel.SetActive(false);
+    }
+
 }

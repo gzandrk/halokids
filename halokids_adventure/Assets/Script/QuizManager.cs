@@ -22,6 +22,10 @@ public class QuizManager : MonoBehaviour
 
     public bool hasil;
 
+    public AudioSource source;
+    public AudioClip benar;
+    public AudioClip salah;
+
     // Start is called before the first frame update
     void Update()
     {
@@ -35,13 +39,13 @@ public class QuizManager : MonoBehaviour
         gameovertxt.text = hasiltxt.text;
         yield return new WaitForSeconds(3);
         GameOverPanel.SetActive(false);
-        //hasil = false;
     }
     public void Benar()
     {
         pertanyaan.RemoveAt(currentPertanyaan);
         hasiltxt.text = "jawabanmu benar, boleh maju "+bonusMaju+" langkah";
         hasil = true;
+        source.PlayOneShot(benar);
         StartCoroutine(GameOver());
         //return hasil;
     }
@@ -50,6 +54,7 @@ public class QuizManager : MonoBehaviour
         pertanyaan.RemoveAt(currentPertanyaan);
         hasiltxt.text = "jawabanmu salah";
         hasil = false;
+        source.PlayOneShot(salah);
         StartCoroutine(GameOver());
         //return hasil;
     }

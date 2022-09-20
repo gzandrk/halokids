@@ -10,6 +10,7 @@ public static class SceneLoad
         MainMenu1,
         PickPlayer1,
         Game1,
+        Game2
     }
     public static void Load(Scene sc) 
     {
